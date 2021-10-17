@@ -32,13 +32,12 @@ function oneWayANOVA(m, n, nvec, yarr)
     pval = 1-fdistcdf(m-1, n-m, Float64(F));
 
     # Print results
-    println("SSE            = ", Float64(SSE))
-    println("SST            = ", Float64(SST))
-    println("Total SS       = ", Float64(totalSS))
+    println("One-way ANOVA test:")
     println("MSE            = ", Float64(MSE))
     println("MST            = ", Float64(MST))
     println("F              = ", Float64(F))
     println("Numerator df   = ", m-1)
     println("Denominator df = ", n-m)
     println("P-value        = ", pval)
+    println("--------------------------------------------------")
 end
