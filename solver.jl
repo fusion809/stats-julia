@@ -520,11 +520,11 @@ Nothing.
 """
 function printNormal(m, muNull, varNull, ybarvec, varUnrest, lam, stat, pval)
     println("For normal model:")
-    println("Mean (null)               = ", Float64(muNull))
-    println("Variance (null)           = ", Float64.(varNull))
-    println("Mean (unrestricted)       = ", Float64.(ybarvec))
-    println("Variance (unrestricted)   = ", Float64.(varUnrest))
-    println("Lambda                    = ", Float64(lam))
+    println("mu (null)                 = ", Float64(muNull))
+    println("sigma_i^2 (null)          = ", Float64.(varNull))
+    println("mu_i (unrestricted)       = ", Float64.(ybarvec))
+    println("sigma_i^2 (unrestricted)  = ", Float64.(varUnrest))
+    println("lambda                    = ", Float64(lam))
     println("Test statistic            = ", Float64(stat))
     println("Degrees of freedom        = ", m-1)
     println("P-value                   = ", pval)
@@ -570,7 +570,7 @@ function printGamma(m, alpha, beta, alphavec, betavec, lam, stat, pval)
     println("beta (null)        = ", Float64(beta))
     println("alpha_i            = ", Float64.(alphavec))
     println("beta_i             = ", Float64.(betavec))
-    println("Lambda             = ", lam)
+    println("lambda             = ", lam)
     println("Test statistic     = ", Float64(stat))
     println("Degrees of freedom = ", 2*m-2)
     println("P-value            = ", pval)
@@ -587,28 +587,73 @@ Parameters
 ----------
 `m::Int64`: number of groups.
 
+`theta::BigFloat`: maximum likelihood estimator (MLE) of `\\theta` under the 
+null hypothesis.
+
+`thetavec::Matrix{BigFloat}`: unrestricted MLE of `\\theta_i`.
+
+`lam::BigFloat`: likelihood ratio for exponential test.
+
+`stat::BigFloat`: test statistic for exponential test.
+
+`pval::Float64`: p-value for exponential test.
+
+Returns
+-------
+Nothing.
+"""
+function printExp(m, theta, thetavec, lam, stat, pval)
+    # Exponential distribution test
+    println("For exponential model:")
+    println("theta              = ", Float64(theta))
+    println("theta_i            = ", Float64.(thetavec))
+    println("lambda             = ", Float64(lam))
+    println("Test statistic     = ", Float64(stat))
+    println("Degrees of freedom = ", m - 1)
+    println("P-value            = ", pval)
+    println("----------------------------------------------")
+end
+
+"""
+    expTest(m::Int64, n::Int64, nvec::Matrix{Int64}, ybar::BigFloat, 
+    ybarvec::Matrix{BigFloat})
+
+Perform the exponential likelihood-ratio test.
+
+Parameters
+----------
+`m::Int64`: number of groups.
+
 `n::Int64`: total number of observations.
 
 `nvec::Matrix{Int64}`: m x 1 matrix of sample sizes.
 
 `ybar::BigFloat`: overall mean of all observations.
 
-`ybar::Matrix{BigFloat}`: m x 1 matrix of the mean of each sample (treatment 
+`ybarvec::Matrix{BigFloat}`: m x 1 matrix of the mean of each sample (treatment
 group).
 
 Returns
 -------
-Nothing.
+`theta::BigFloat`: maximum likelihood estimator (MLE) of `\\theta` under the 
+null hypothesis.
+
+`thetavec::Matrix{BigFloat}`: unrestricted MLE of `\\theta_i`.
+
+`lam::BigFloat`: likelihood ratio for exponential test.
+
+`stat::BigFloat`: test statistic for exponential test.
+
+`pval::Float64`: p-value for exponential test.
 """
-function printExp(m, n, nvec, ybar, ybarvec)
-    # Exponential distribution test
-    statExp = 2*n*log(ybar) - 2*sum(nvec .* log.(ybarvec))
-    pvalExp = 1-chisqcdf(m-1, Float64(statExp))
-    println("For exponential model:")
-    println("Test statistic     = ", Float64(statExp))
-    println("Degrees of freedom = ", m - 1)
-    println("P-value            = ", pvalExp)
-    println("----------------------------------------------")
+function expTest(m, n, nvec, ybar, ybarvec)
+    thetavec = ybarvec;
+    theta = ybar;
+    lam = ybar^(-n) * prod(ybarvec.^(nvec));
+    stat = -2*log(lam);
+    pval = 1-chisqcdf(m-1, Float64(stat))
+
+    return theta, thetavec, lam, stat, pval
 end
 
 """
@@ -640,10 +685,14 @@ function main()
     alpha, beta, alphavec, betavec, lamGam, statGam, pvalGam = gammaTest(m, n,
     ni, alphavec, nvec, group, yarr, ybar, ybarvec, itMax, tol);
 
+    # Perform the exponential test
+    theta, thetavec, lamExp, statExp, pvalExp = expTest(m, n, nvec, ybar, 
+    ybarvec);
+
     # Print gamma and exp test MLEs and results
     println("Likelihood-ratio tests:")
     printGamma(m, alpha, beta, alphavec, betavec, lamGam, statGam, pvalGam);
-    printExp(m, n, nvec, ybar, ybarvec);
+    printExp(m, theta, thetavec, lamExp, statExp, pvalExp);
     printNormal(m, muNull, varNull, ybarvec, varUnrest, lamNorm, statNorm, 
     pvalNorm)
 end
