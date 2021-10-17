@@ -7,6 +7,7 @@ include("getVars.jl")
 include("gamma.jl")
 include("normal.jl")
 include("exp.jl")
+include("ANOVA.jl")
 
 # Get problem data and parameters
 csv_reader = CSV.File("ProjectData.csv")
@@ -20,6 +21,7 @@ itMax = 1e3
 tol = 1e-13
 
 # Use R to perform ANOVA and GLM analysis
+oneWayANOVA(m, n, nvec, yarr);
 R"source('anovaGLM.R')"
 
 # Perform the normal test

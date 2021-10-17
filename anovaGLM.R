@@ -5,14 +5,6 @@ dat <- read.csv("ProjectData.csv")
 dat$Group = factor(dat$Group);
 attach(dat);
 
-# Linear model
-lm.model <- lm(Flight.distance ~ Group);
-print("General linear model:")
-print("Coefficients:")
-print(coef(lm.model))
-print(anova(lm.model))
-print("----------------------------------------------")
-
 # Welch's ANOVA
 print("Welch's ANOVA:")
 print(oneway.test(Flight.distance ~ Group))
