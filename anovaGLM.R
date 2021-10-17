@@ -1,4 +1,5 @@
 #!/usr/bin/env Rscript
+# Written by Brenton Horne in October 2021
 # Set up data set
 dat <- read.csv("ProjectData.csv")
 dat$Group = factor(dat$Group);
