@@ -1,14 +1,13 @@
 # Statistics in Julia
 My original plan for this repository was to perform all the one-way statistical tests that I've performed on my STA3300 experimental project data using a single Julia script. Unfortunately, I found the available statistics libraries for Julia left a lot to be desired, as I found both GLM and MixedAnova difficult to use to perform the analysis of deviance I would like to perform on my gamma generalized linear model (very easy to get type errors). When I overcame these errors, I received a p-value that was heavily rounded, hence making it difficult to fairly compare to the p-values I obtained from my likelihood-ratio tests. ANOVA tests had similar issues in Julia. So I decided to write an R script to perform the gamma GLM analysis of deviance and linear model ANOVA tests and call this R script within my Julia script.
 
-As of commit #3, running solver.jl on my machine which has ProjectData.csv in this repository returns:
+As of commit #5, running solver.jl on my machine which has ProjectData.csv in this repository returns:
 
 ```
 [1] "General linear model:"
 [1] "Coefficients:"
 (Intercept)      Group2      Group3      Group4      Group5      Group6 
   2066.6667   2290.0000   3958.0000   2532.6667    921.3333   1784.0000 
-[1] "ANOVA table:"
 Analysis of Variance Table
 
 Response: Flight.distance
@@ -32,7 +31,6 @@ F = 44.746, num df = 5.0000, denom df = 9.8678, p-value = 1.814e-06
  0.0004838710 -0.0002543377 -0.0003178867 -0.0002664482 -0.0001491989 
        Group6 
 -0.0002241757 
-[1] "Analysis of deviance table:"
 Analysis of Deviance Table
 
 Model: Gamma, link: inverse
@@ -73,6 +71,10 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 │     Design, DesignNo, Flight.distance, Group, PaperclipNo, Paperclips
 │ 
 │ The following objects are masked from dat (pos = 9):
+│ 
+│     Design, DesignNo, Flight.distance, Group, PaperclipNo, Paperclips
+│ 
+│ The following objects are masked from dat (pos = 10):
 │ 
 │     Design, DesignNo, Flight.distance, Group, PaperclipNo, Paperclips
 │ 

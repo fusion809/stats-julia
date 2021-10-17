@@ -9,7 +9,6 @@ lm.model <- lm(Flight.distance ~ Group);
 print("General linear model:")
 print("Coefficients:")
 print(coef(lm.model))
-print("ANOVA table:")
 print(anova(lm.model))
 print("----------------------------------------------")
 
@@ -23,6 +22,5 @@ glm.model <- glm(Flight.distance ~ Group, family=Gamma(link="inverse"));
 print("Gamma (inverse link) generalized linear model:")
 print("Coefficients:")
 print(coef(glm.model))
-print("Analysis of deviance table:")
 print(anova(glm.model, test="Chisq"));
 print("----------------------------------------------")
