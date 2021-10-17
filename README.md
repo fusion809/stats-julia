@@ -1,22 +1,17 @@
 # Statistics in Julia
 My original plan for this repository was to perform all the one-way statistical tests that I've performed on my STA3300 experimental project data using a single Julia script. Unfortunately, I found the available statistics libraries for Julia left a lot to be desired, as I found both GLM and MixedAnova difficult to use to perform the analysis of deviance I would like to perform on my gamma generalized linear model (very easy to get type errors). When I overcame these errors, I received a p-value that was heavily rounded, hence making it difficult to fairly compare to the p-values I obtained from my likelihood-ratio tests. ANOVA tests had similar issues in Julia. So I decided to write an R script to perform the gamma GLM analysis of deviance and linear model ANOVA tests and call this R script within my Julia script.
 
-As of commit #6, running solver.jl on my machine which has ProjectData.csv in this repository returns:
+As of commit #15, running solver.jl on my machine which has ProjectData.csv in this repository returns:
 
 ```
-[1] "General linear model:"
-[1] "Coefficients:"
-(Intercept)      Group2      Group3      Group4      Group5      Group6 
-  2066.6667   2290.0000   3958.0000   2532.6667    921.3333   1784.0000 
-Analysis of Variance Table
-
-Response: Flight.distance
-          Df   Sum Sq Mean Sq F value    Pr(>F)    
-Group      5 46838714 9367743  11.057 1.314e-05 ***
-Residuals 24 20333978  847249                      
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-[1] "----------------------------------------------"
+One-way ANOVA test:
+MSE            = 847249.0740720462
+MST            = 9.367742888877727e6
+F              = 11.05665757042909
+Numerator df   = 5
+Denominator df = 24
+P-value        = 1.3137465285417704e-5
+--------------------------------------------------
 [1] "Welch's ANOVA:"
 
         One-way analysis of means (not assuming equal variances)
@@ -46,47 +41,6 @@ Group  5   3.2693        24     1.1702 4.62e-13 ***
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 [1] "----------------------------------------------"
-┌ Warning: RCall.jl: The following objects are masked from dat (pos = 3):
-│ 
-│     Design, DesignNo, Flight.distance, Group, PaperclipNo, Paperclips
-│ 
-│ The following objects are masked from dat (pos = 4):
-│ 
-│     Design, DesignNo, Flight.distance, Group, PaperclipNo, Paperclips
-│ 
-│ The following objects are masked from dat (pos = 5):
-│ 
-│     Design, DesignNo, Flight.distance, Group, PaperclipNo, Paperclips
-│ 
-│ The following objects are masked from dat (pos = 6):
-│ 
-│     Design, DesignNo, Flight.distance, Group, PaperclipNo, Paperclips
-│ 
-│ The following objects are masked from dat (pos = 7):
-│ 
-│     Design, DesignNo, Flight.distance, Group, PaperclipNo, Paperclips
-│ 
-│ The following objects are masked from dat (pos = 8):
-│ 
-│     Design, DesignNo, Flight.distance, Group, PaperclipNo, Paperclips
-│ 
-│ The following objects are masked from dat (pos = 9):
-│ 
-│     Design, DesignNo, Flight.distance, Group, PaperclipNo, Paperclips
-│ 
-│ The following objects are masked from dat (pos = 10):
-│ 
-│     Design, DesignNo, Flight.distance, Group, PaperclipNo, Paperclips
-│ 
-│ The following objects are masked from dat (pos = 11):
-│ 
-│     Design, DesignNo, Flight.distance, Group, PaperclipNo, Paperclips
-│ 
-│ The following objects are masked from dat (pos = 12):
-│ 
-│     Design, DesignNo, Flight.distance, Group, PaperclipNo, Paperclips
-│ 
-└ @ RCall ~/.julia/packages/RCall/iMDW2/src/io.jl:160
 Likelihood-ratio tests:
 For gamma model:
 alpha (null)       = 6.920003525101537
@@ -97,7 +51,7 @@ lambda             = 3.330888278399484311755809283606544074030899921482052806807
 Test statistic     = 4547.501665718853
 Degrees of freedom = 10
 P-value            = 0.0
-----------------------------------------------
+--------------------------------------------------
 For exponential model:
 theta              = 3981.000000001386
 theta_i            = [2066.66666666666; 4356.6666666674655; 6024.6666666668; 4599.333333334066; 2988.000000006672; 3850.666666666652]
@@ -105,7 +59,7 @@ lambda             = 0.19502067240847595
 Test statistic     = 3.269299427372287
 Degrees of freedom = 5
 P-value            = 0.6585451040846756
-----------------------------------------------
+--------------------------------------------------
 For normal model:
 mu (null)                 = 3780.603400653011
 sigma_i^2 (null)          = [2.9541702392189084e6; 2.3486133308947557e6; 5.292920386316882e6; 1.6786449248917922e6; 1.0331250395946143e6; 368017.3056889539]
@@ -115,5 +69,5 @@ lambda                    = 2.184006034590533e-11
 Test statistic            = 49.09455040392952
 Degrees of freedom        = 5
 P-value                   = 2.122662379200335e-9
-----------------------------------------------
+--------------------------------------------------
 ```
